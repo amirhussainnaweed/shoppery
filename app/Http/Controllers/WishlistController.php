@@ -14,9 +14,9 @@ class WishlistController extends Controller
         ->first();
 
         if($exists){
-            return response()->json([
-                'message' => 'Already in Wishlist!'
-            ]);
+            return redirect()->back()->with(
+                'message', 'Already in Wishlist!'
+            );
         }
 
         Wishlist::create([
@@ -24,8 +24,11 @@ class WishlistController extends Controller
             'user_id' => 1,
         ]);
 
-        return response()->json([
-            'message' => 'Added to wishlist!'
-        ]);
+        return redirect()->back()->with(
+            'message', 'Added to wishlist!'
+        );
+
+        // session()->flash('message', 'Added to wishlist');
+        // dd(session()->get('message'));
     }
 }
