@@ -1,11 +1,14 @@
 import Breadcrumb from '@/Components/Breadcrumb';
 import { AnimatedSection } from '@/Components/Layout/AnimatedSection';
 import MainLayout from '@/Components/Layout/MainLayout';
+import VegetableSlider from '@/Components/Layout/VegetableSlider';
 import { Head } from '@inertiajs/react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import Counter from './Counter';
 import Product from './Product';
 import ProductTabs from './ProductTabs';
 import RelatedCards from './RelatedCards';
-
 
 function ProductDetails({ product = [] }) {
     const stars = [
@@ -46,7 +49,6 @@ function ProductDetails({ product = [] }) {
                 <Head title="ProductDetails"></Head>
                 <Product />
                 <AnimatedSection>
-
                     <div className="mx-10 grid grid-cols-1 lg:mx-12 lg:grid-cols-2 xl:mx-16 2xl:px-[200px]">
                         <div className="flex items-center justify-center xl:justify-end">
                             <div>
@@ -178,7 +180,6 @@ function ProductDetails({ product = [] }) {
                 </AnimatedSection>
                 <AnimatedSection>
                     <div>
-
                         <ProductTabs />
                     </div>
                 </AnimatedSection>

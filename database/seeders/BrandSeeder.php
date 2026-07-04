@@ -2,17 +2,31 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Brand;
+use Illuminate\Database\Seeder;
 
 class BrandSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-         Brand::factory()->count(100)->create();
+        $brands = [
+            'Apple',
+            'Samsung',
+            'Nike',
+            'Adidas',
+            'Sony',
+            'LG',
+            'Dell',
+            'HP',
+            'Canon',
+            'Panasonic'
+        ];
+
+        foreach ($brands as $brand) {
+            Brand::create([
+                'name' => $brand,
+                'description' => $this->faker->sentence()
+            ]);
+        }
     }
 }

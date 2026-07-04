@@ -1,7 +1,35 @@
 import { Eye, Heart } from 'lucide-react';
 import { router } from '@inertiajs/react';
+import axios from 'axios';
+
+
+
+
 
 const ProductCard = ({ product }) => {
+
+const addToCart = async () => {
+    try {
+        const response = await axios.post(
+            `/cart/add/${product.id}`,
+            {},
+            {
+                withCredentials: true,
+            }
+        );
+
+        alert(response.data.message);
+
+    } catch (error) {
+
+        if (error.response?.status === 401) {
+            window.location.href = "/login";
+            return;
+        }
+
+    }
+};
+
 
     const addToWishList = (productID) => {
         router.post('/wishlist', {
@@ -72,7 +100,7 @@ const ProductCard = ({ product }) => {
 
             {/* CART BUTTON */}
 
-            <button
+            <button onClick={addToCart} 
                 className={`absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ${
                     product.stock
                         ? 'bg-green-500 text-white'

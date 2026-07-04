@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WishlistController;
+use App\Controllers\CartController;
+
+
 
 Route::get('/', function () {
     return Inertia::render('Home/Index');
@@ -27,6 +30,7 @@ Route::get('/blogs/singleBlog', function () {
 
 Route::get('/wishlist', [WishlistController::class, 'index']);
 
+Route::post('/cart/add/{productid}', [CartController::class, 'addToCart'])->middleware('auth');
 
 Route::get('/checkout', function () {
     return Inertia::render('Checkout/Index');

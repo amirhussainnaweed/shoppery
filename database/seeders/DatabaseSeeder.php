@@ -2,38 +2,33 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\Product;
-use Database\Seeders\Category;
-use Database\Seeders\Brand;
+use App\Models\User;
+use App\Models\Product;
+use App\Models\Order;
+use App\Models\Review;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::factory(200)
+            ->has(\App\Models\Address::factory()->count(2))
+            ->has(\App\Models\Billing::factory()->count(2))
+            ->has(\App\Models\Cart::factory())
+            ->has(\App\Models\Wishlist::factory()->count(3))
+            ->has(\App\Models\Order::factory()->count(2))
+            ->create();
 
-        // User::factory()->create([
-        //     'name' => 'Ahamdullah',
-        //     'email' => 'test@example.com',
-        //     'password' => '1234',
-        //     'lastname'=> 'rahimi',
-        //     'phonenumber' => '0839203',
-        //     'profile_image' => 'bhjnkmlcdsvmkccdvf',
-        //     'age' => 47
-        // ]);
+        Product::factory(50)
+            ->has(\App\Models\ProductAttribute::factory()->count(3))
+            ->has(\App\Models\ProductImage::factory()->count(2))
+            ->has(\App\Models\ProductTag::factory()->count(2))
+            ->has(\App\Models\Review::factory()->count(5))
+            ->create();
 
-        $this->call([
-            BrandSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class
-        ]);
+        Order::factory(20)
+            ->has(\App\Models\OrderItem::factory()->count(3))
+            ->create();
     }
 }
