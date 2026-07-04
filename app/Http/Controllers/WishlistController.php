@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Wishlist;
+use Inertia\Inertia;
 
 class WishlistController extends Controller
 {
@@ -30,5 +31,14 @@ class WishlistController extends Controller
 
         // session()->flash('message', 'Added to wishlist');
         // dd(session()->get('message'));
+    }
+
+    public function index()
+    {
+        $wishlists = Wishlist::with('product')->get();
+        
+        return Inertia::render('Wishlist/Index', [
+            'wishlists' => $wishlists
+        ]);
     }
 }
