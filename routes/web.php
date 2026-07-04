@@ -25,9 +25,7 @@ Route::get('/blogs/singleBlog', function () {
     return inertia::render('Blogs/SingleBlock');
 });
 
-Route::get('/wishlist', function () {
-    return Inertia::render('Wishlist/Index');
-});
+Route::get('/wishlist', [WishlistController::class, 'index']);
 
 
 Route::get('/checkout', function () {
