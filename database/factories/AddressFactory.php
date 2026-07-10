@@ -17,7 +17,7 @@ class AddressFactory extends Factory
             'address_text' => $this->faker->streetAddress(),
             'city' => $this->faker->city(),
             'country' => $this->faker->country(),
-            'postal_code' => $this->faker->numberBetween(10000, 99999),
+            'postal_code' => $this->faker->numberBetween(100, 99999),
         ];
     }
 }

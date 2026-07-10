@@ -62,3 +62,11 @@ Route::get('/dashboard', function () {
                 ->setStatusCode(404);
         });
 require __DIR__.'/auth.php';
+
+
+// fake routes
+Route::get('/show-product/{product}', [SecondProduct::class, 'index' ])->name('product.show');
+
+Route::get('/product/{product}/edit', [SecondProduct::class, 'edit'])->name('product.edit');
+
+Route::delete('/product/{product}', [SecondProduct::class, 'delete'])->name('product.delete');
