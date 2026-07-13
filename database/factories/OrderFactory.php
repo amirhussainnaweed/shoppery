@@ -24,11 +24,11 @@ class OrderFactory extends Factory
             'user_id' => User::factory(),
             'billing_id' => Billing::factory(),
             'shipping_address_id' => ShippingAddress::factory(),
-            'order_date' => $this->fake()->dateTimeBetween('-1 year', 'now'),
-            'status' => $this->fake()->randomElement(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
-            'payment_method' => $this->fake()->randomElement(['credit_card', 'paypal', 'bank_transfer', 'cash_on_delivery']),
-            'shipping_cost' => $this->fake()->randomFloat(2, 0, 50),
-            'total_price' => $this->fake()->randomFloat(2, 10, 1000),
+            'order_date' => fake()->dateTimeBetween('-1 year', 'now'),
+            'status' => fake()->randomElement(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
+            'payment_method' => fake()->randomElement(['credit_card', 'paypal', 'bank_transfer', 'cash_on_delivery']),
+            'shipping_cost' => fake()->randomFloat(2, 0, 50),
+            'total_price' => fake()->randomFloat(2, 10, 1000),
         ];
     }
 }
