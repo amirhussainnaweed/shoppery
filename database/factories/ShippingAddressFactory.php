@@ -19,10 +19,10 @@ class ShippingAddressFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'text' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'country' => $this->faker->country(),
-            'postal_code' => $this->faker->postcode(),
+            'text' => $this->fake()->streetAddress(),
+            'city' => $this->fake()->city(),
+            'country' => $this->fake()->country(),
+            'postal_code' => $this->fake()->numerify('#####'),
         ];
     }
 }
