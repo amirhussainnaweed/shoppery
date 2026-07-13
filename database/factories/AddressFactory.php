@@ -14,10 +14,10 @@ class AddressFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'address_text' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'country' => $this->faker->country(),
-            'postal_code' => $this->faker->numberBetween(100, 99999),
+            'address_text' => $this->fake()->streetAddress(),
+            'city' => $this->fake()->city(),
+            'country' => $this->fake()->country(),
+            'postal_code' => $this->fake()->numberBetween(100, 99999),
         ];
     }
 }
