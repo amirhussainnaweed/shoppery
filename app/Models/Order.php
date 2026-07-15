@@ -19,18 +19,18 @@ class Order extends Model
         'total_price'
     ];
 
-    public function User(){
+    public function user(){
         return $this->belongsTo(User::class);
     }
-    public function Billing(){
+    public function billing(){
         return $this->belongsTo(Billing::class);
     }
 
-    public function ShippingAddress(){
+    public function shippingAddress(){
         return $this->belongsTo(ShippingAddress::class);
     }
 
-    public function OrderItem(){
+    public function orderItem(){
         return $this->hasMany(OrderItem::class);
     }
 
