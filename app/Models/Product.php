@@ -58,15 +58,15 @@ class Product extends Model
     }
 
     public function cartItems(){
-        return $this->hasMany(CartItems::class);
+        return $this->hasMany(CartItem::class);
     }
 
     public function orderItems(){
-        return $this->hasMany(OrderItems::class);
+        return $this->hasMany(OrderItem::class);
     }
 
     public function tags(){
-            return $this->belongsToMany(Tag::class);
+            return $this->belongsToMany(Tag::class, 'product_tags');
     }
 public function productAttributes(): HasMany
 {
