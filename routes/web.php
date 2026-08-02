@@ -1,13 +1,11 @@
 <?php
 
+use App\Controllers\CartController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\WishlistController;
-use App\Controllers\CartController;
-
-
 
 Route::get('/', function () {
     return Inertia::render('Home/Index');
@@ -21,11 +19,11 @@ Route::get('/cart', function () {
 });
 
 Route::get('/blogs', function () {
-    return inertia::render('Blog/Index');
+    return Inertia::render('Blog/Index');
 });
 
 Route::get('/blogs/singleBlog', function () {
-    return inertia::render('Blogs/SingleBlock');
+    return Inertia::render('Blogs/SingleBlock');
 });
 
 Route::get('/wishlist', [WishlistController::class, 'index']);
@@ -57,18 +55,24 @@ Route::post('/wishlist', [WishlistController::class, 'store']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard/Index');
-    })->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-    Route::middleware('auth')->group(function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        });
-
-        Route::fallback(function () {
-            return Inertia::render('Errors/NotFound')
-                ->toResponse(request())
-                ->setStatusCode(404);
-        });
+Route::fallback(function () {
+    return Inertia::render('Errors/NotFound')
+        ->toResponse(request())
+        ->setStatusCode(404);
+});
 require __DIR__.'/auth.php';
+
+// fake routes
+Route::get('/show-product/{product}', [SecondProduct::class, 'index'])->name('product.show');
+
+Route::get('/product/{product}/edit', [SecondProduct::class, 'edit'])->name('product.edit');
+
+Route::delete('/product/{product}', [SecondProduct::class, 'delete'])->name('product.delete');

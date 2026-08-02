@@ -43,4 +43,16 @@ class ProductController extends Controller
             "product" => $product
         ]);
     }
+
+    public function store(Request $request){
+        $validated = $request->validated([
+            "name" => "string|max:255",
+            "price" => "decimal",
+            "description" => "string|min:255",
+        ]);
+
+        Product::create($validated);
+
+        redirect()->route('shop.products');
+    }
 }
