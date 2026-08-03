@@ -26,7 +26,6 @@ Route::get('/blogs/singleBlog', function () {
     return Inertia::render('Blogs/SingleBlock');
 });
 
-Route::get('/wishlist', [WishlistController::class, 'index']);
 
 Route::post('/cart/add/{productid}', [CartController::class, 'addToCart'])->middleware('auth');
 
@@ -51,13 +50,14 @@ Route::get('/settings', function () {
     return Inertia::render('Account/Settings');
 });
 
-Route::post('/wishlist', [WishlistController::class, 'store']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard/Index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::post('/wishlist', [WishlistController::class, 'store']);
+    Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
