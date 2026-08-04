@@ -5,68 +5,51 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
-export default function Cart() {
+export default function Cart(props) {
+    const cartItems = props.cartItems || props.CartItems || [];
     const [coupon, setCoupon] = useState('');
 
-    const [products, setProducts] = useState([
-        {
-            id: 1,
-            name: 'Green Capsicum',
-            price: 14.0,
-            quantity: 0,
+    const placeholderImage = 'https://via.placeholder.com/150?text=Product';
 
-            image: '/images/greencapsicum.png',
-        },
-        {
-            id: 2,
-            name: 'Red Capsicum',
-            price: 14.0,
-            quantity: 0,
-
-            image: '/images/redcapsicum.png',
-        },
-    ]);
-
-    const increaseQuantity = (id) => {
-        setProducts((prev) =>
-            prev.map((item) =>
-                item.id === id
-                    ? {
-                          ...item,
-                          quantity: item.quantity + 1,
-                      }
-                    : item,
-            ),
-        );
-    };
-    const decreaseQuantity = (id) => {
-        setProducts((prev) =>
-            prev.map((item) =>
-                item.id === id && item.quantity > 0
-                    ? {
-                          ...item,
-                          quantity: item.quantity - 1,
-                      }
-                    : item,
-            ),
+    const increaseQuantity = (cartItemId, currentQuantity) => {
+        router.patch(
+            `/cart/item/${cartItemId}`,
+            { quantity: currentQuantity + 1 },
+            { preserveScroll: true }
         );
     };
 
-    const total = products.reduce(
-        (sum, item) => sum + item.quantity * item.price,
-        0,
-    );
-
-    const removeProduct = (id) => {
-        setProducts((prev) => prev.filter((item) => item.id !== id));
+    const decreaseQuantity = (cartItemId, currentQuantity) => {
+        if (currentQuantity > 1) {
+            router.patch(
+                `/cart/item/${cartItemId}`,
+                { quantity: currentQuantity - 1 },
+                { preserveScroll: true }
+            );
+        }
     };
+
+    const removeProduct = (cartItemId) => {
+        router.delete(`/cart/item/${cartItemId}`, {
+            preserveScroll: true,
+            onSuccess: () => toast.success('Cart Item Removed'),
+        });
+    };
+
+    const total = cartItems.reduce((sum, item) => {
+        const productObj = item.product || item.Product || {};
+        const price = Number(productObj.price ?? item.price ?? 0);
+        return sum + item.quantity * price;
+    }, 0);
 
     const returnToShop = () => {
         router.visit('/shop');
     };
+
     const proceedToCheckout = () => {
         router.visit('/checkout');
     };
+
     const updateCart = () => {
         toast.success('Cart Updated Successfully');
     };
@@ -101,17 +84,17 @@ export default function Cart() {
                 backgroundImage="/images/breadcrumbs.png"
             ></Breadcrumb>
             {/* Container */}
-            <section className="mx-auto max-w-7xl px-4 py-10">
+            <section className="px-4 py-10 mx-auto max-w-7xl">
                 <h1 className="mb-10 text-center text-2xl font-semibold leading-[120%] text-[#1a1a1a] sm:text-3xl md:text-4xl">
                     My Shopping Cart
                 </h1>
-                {/* Layout */}
+         
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                    {/* Product Table */}
+                   
                     <div className="lg:col-span-2">
-                        <div className="overflow-hidden rounded-2xl border lg:col-span-2">
-                            {/* Header */}
-                            <div className="hidden gap-14 border-b bg-gray-50 p-5 md:grid md:grid-cols-5">
+                        <div className="overflow-hidden border rounded-2xl lg:col-span-2">
+                            
+                            <div className="hidden p-5 border-b gap-14 bg-gray-50 md:grid md:grid-cols-5">
                                 <p className="text-sm font-medium leading-[120%] tracking-[3%] text-[#808080] md:col-span-2">
                                     PRODUCT
                                 </p>
@@ -126,104 +109,96 @@ export default function Cart() {
                                 </p>
                             </div>
                             {/* Product Row */}
-                            {products.map((product) => (
-                                <div
-                                    key={product.id}
-                                    className="flex flex-col gap-6 border-b p-4 md:grid md:grid-cols-5 md:items-center"
-                                >
-                                    <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center md:col-span-2">
-                                        <img
-                                            src={product.image}
-                                            alt={product.name}
-                                            className="h-24 w-24 object-contain sm:h-32 sm:w-32"
-                                        />
-                                        <h3 className="font-medium leading-[150%] text-[#1A1A1A] sm:text-lg">
-                                            {product.name}
-                                        </h3>
-                                    </div>
-                                    <div className="flex justify-between p-3">
-                                        <p className="text-sm font-medium leading-[120%] tracking-[3%] text-[#808080] md:hidden">
-                                            Price
-                                        </p>
-                                        <p className="font-normal leading-[150%] text-[#1A1A1A]">
-                                            ${product.price.toFixed(2)}
-                                        </p>
-                                    </div>
-                                    <div className="flex justify-between p-3">
-                                        <p className="text-sm font-medium leading-[120%] tracking-[3%] text-[#808080] md:hidden">
-                                            Quantity
-                                        </p>
-                                        <div className="flex w-fit items-center gap-2 rounded-full border px-3 py-2">
-                                            {' '}
-                                            <motion.button
-                                                whileHover={{
-                                                    scale: 1.15,
-                                                }}
-                                                whileTap={{ scale: 0.95 }}
-                                                transition={{ duration: 0.2 }}
-                                                onClick={() =>
-                                                    decreaseQuantity(product.id)
-                                                }
-                                            >
-                                                <img
-                                                    src="/images/Minus.svg"
-                                                    alt="minus"
-                                                    className="w-8 transition-opacity hover:brightness-90"
-                                                />
-                                            </motion.button>
-                                            <p>{product.quantity}</p>
-                                            <motion.button
-                                                whileHover={{
-                                                    scale: 1.15,
-                                                }}
-                                                whileTap={{ scale: 0.95 }}
-                                                transition={{ duration: 0.2 }}
-                                                onClick={() =>
-                                                    increaseQuantity(product.id)
-                                                }
-                                            >
-                                                <img
-                                                    src="/images/Plus.svg"
-                                                    alt="plus"
-                                                    className="w-8 transition-opacity hover:brightness-90"
-                                                />
-                                            </motion.button>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between p-3">
-                                        <p className="text-sm font-medium leading-[120%] tracking-[3%] text-[#808080] md:hidden">
-                                            Subtotal
-                                        </p>
-                                        <div className="flex items-center gap-6 md:ml-6">
-                                            {' '}
-                                            <p className="font-normal leading-[150%] text-[#1A1A1A]">
-                                                $
-                                                {(
-                                                    product.quantity *
-                                                    product.price
-                                                ).toFixed(2)}
-                                            </p>
-                                            <motion.button
-                                                whileHover={{
-                                                    scale: 1.2,
-                                                }}
-                                                whileTap={{ scale: 0.95 }}
-                                                transition={{ duration: 0.2 }}
-                                                onClick={() =>
-                                                    removeProduct(product.id)
-                                                }
-                                                className="shrink-0"
-                                            >
-                                                <img
-                                                    src="/images/remove.svg"
-                                                    alt="remove"
-                                                    className="w-6 shrink-0 transition-opacity hover:brightness-50"
-                                                />
-                                            </motion.button>
-                                        </div>
-                                    </div>
+                            {cartItems.length === 0 ? (
+                                <div className="p-10 text-center text-gray-500">
+                                    Your cart is empty.
                                 </div>
-                            ))}
+                            ) : (
+                                cartItems.map((item) => {
+                                    const productObj = item.product || item.Product || {};
+                                    const price = Number(productObj.price ?? item.price ?? 0);
+                                    const itemSubtotal = price * item.quantity;
+
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            className="flex flex-col gap-3 border-b lg:ml-[-70px] lg:p-2 md:grid md:grid-cols-5 md:items-center"
+                                        >
+                                          
+                                            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center md:col-span-2">
+                                                <img
+                                                    src={placeholderImage}
+                                                    alt="Product Placeholder"
+                                                    className="object-contain w-24 h-24 sm:h-32 sm:w-32"
+                                                />
+                                            </div>
+                                            <div className="flex justify-between p-3">
+                                                <p className="text-sm font-medium leading-[120%] tracking-[3%] text-[#808080] md:hidden">
+                                                    Price
+                                                </p>
+                                                <p className="font-normal leading-[150%] text-[#1A1A1A]">
+                                                    ${price.toFixed(2)}
+                                                </p>
+                                            </div>
+                                            <div className="flex justify-between p-3">
+                                                <p className="text-sm font-medium leading-[120%] tracking-[3%] text-[#808080] md:hidden">
+                                                    Quantity
+                                                </p>
+                                                <div className="flex items-center gap-2 px-3 py-2 border rounded-full w-fit">
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        onClick={() => decreaseQuantity(item.id, item.quantity)}
+                                                    >
+                                                        <img
+                                                            src="/images/Minus.svg"
+                                                            alt="minus"
+                                                            className="w-8 transition-opacity hover:brightness-90"
+                                                        />
+                                                    </motion.button>
+                                                    <p>{item.quantity}</p>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        onClick={() => increaseQuantity(item.id, item.quantity)}
+                                                    >
+                                                        <img
+                                                            src="/images/Plus.svg"
+                                                            alt="plus"
+                                                            className="w-8 transition-opacity hover:brightness-90"
+                                                        />
+                                                    </motion.button>
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-between p-3">
+                                                <p className="text-sm font-medium leading-[120%] tracking-[3%] text-[#808080] md:hidden">
+                                                    Subtotal
+                                                </p>
+                                                <div className="flex items-center gap-6 md:ml-6">
+                                                    <p className="font-normal leading-[150%] text-[#1A1A1A]">
+                                                        ${itemSubtotal.toFixed(2)}
+                                                    </p>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.2 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        onClick={() => removeProduct(item.id)}
+                                                        className="shrink-0"
+                                                    >
+                                                        <img
+                                                            src="/images/remove.svg"
+                                                            alt="remove"
+                                                            className="w-6 transition-opacity shrink-0 hover:brightness-50"
+                                                        />
+                                                    </motion.button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
 
                             <div className="flex flex-col justify-between gap-4 p-4 sm:flex-row">
                                 <motion.button
@@ -244,12 +219,11 @@ export default function Cart() {
                             </div>
                         </div>
                         {/* Coupon Section */}
-                        <div className="mt-5 flex flex-col items-center gap-6 rounded-2xl border p-6 md:flex-row md:justify-between lg:flex-row lg:items-center lg:justify-between">
-                            <h2 className="my-5 text-xl font-medium leading-[120%] text-[1a1a1a]">
+                        <div className="flex flex-col items-center gap-6 p-6 mt-5 border rounded-2xl md:flex-row md:justify-between lg:flex-row lg:items-center lg:justify-between">
+                            <h2 className="my-5 text-xl font-medium leading-[120%] text-[#1a1a1a]">
                                 Coupon Code
                             </h2>
-                            <div className="relative flex flex-1 flex-col gap-5 md:block">
-                                {' '}
+                            <div className="relative flex flex-col flex-1 gap-5 md:block">
                                 <input
                                     value={coupon}
                                     onChange={(e) => setCoupon(e.target.value)}
@@ -268,12 +242,12 @@ export default function Cart() {
                         </div>
                     </div>
                     {/* Summary Card */}
-                    <div className="h-fit rounded-2xl border p-6">
+                    <div className="p-6 border h-fit rounded-2xl">
                         <h1 className="mb-10 text-left text-xl font-medium leading-[150%] text-[#1A1A1A]">
                             Cart Table
                         </h1>
                         <div className="flex flex-col gap-4">
-                            <div className="flex items-center justify-between border-b p-4">
+                            <div className="flex items-center justify-between p-4 border-b">
                                 <p className="font-normal leading-[150%] text-[#4D4D4D]">
                                     Subtotal
                                 </p>
@@ -281,7 +255,7 @@ export default function Cart() {
                                     ${total.toFixed(2)}
                                 </p>
                             </div>
-                            <div className="flex items-center justify-between border-b p-4">
+                            <div className="flex items-center justify-between p-4 border-b">
                                 <p className="font-normal leading-[150%] text-[#4D4D4D]">
                                     Shipping
                                 </p>
@@ -289,7 +263,7 @@ export default function Cart() {
                                     Free
                                 </p>
                             </div>
-                            <div className="flex items-center justify-between border-b p-4">
+                            <div className="flex items-center justify-between p-4 border-b">
                                 <p className="font-normal leading-[150%] text-[#4D4D4D]">
                                     Total
                                 </p>
