@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\CartController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WishlistController;
@@ -12,11 +12,6 @@ Route::get('/', function () {
 });
 Route::get('/product-details/{id}', [ProductController::class, 'show'])->name('product.details');
 
-Route::get('/shop', [ProductController::class, 'index'])->name('shop.products');
-
-Route::get('/cart', function () {
-    return Inertia::render('Cart/Index');
-});
 
 Route::get('/blogs', function () {
     return Inertia::render('Blog/Index');
@@ -27,8 +22,15 @@ Route::get('/blogs/singleBlog', function () {
 });
 
 Route::get('/wishlist', [WishlistController::class, 'index']);
+Route::get('/shop', [ProductController::class, 'index'])->name('shop.products');
 
-Route::post('/cart/add/{productid}', [CartController::class, 'addToCart'])->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::patch('/cart/item/{id}', [CartController::class, 'updateQuantity'])->name('cart.update');
+    Route::delete('/cart/item/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+});
+
 
 Route::get('/checkout', function () {
     return Inertia::render('Checkout/Index');
