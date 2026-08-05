@@ -35,7 +35,6 @@ const addToCart = async () => {
         router.post('/wishlist', {
             product_id: productID
         })
-        console.log(productID);
     }
 
     return (

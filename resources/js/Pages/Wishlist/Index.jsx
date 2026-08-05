@@ -1,7 +1,8 @@
 import Breadcrumb from '@/Components/Breadcrumb';
 import MainLayout from '@/Components/Layout/MainLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 export default function Wishlist({wishlists}) {
     console.log(wishlists);
     function StatusBadge({ status }) {
@@ -36,9 +37,33 @@ export default function Wishlist({wishlists}) {
             </a>
         );
     }
+
+    const removeFromWishlist = (wishlistID) => {
+        router.delete(`/wishlist/${wishlistID}`);
+    }
+
+    const {props} = usePage();
+    const [showToast, setShowToast] = useState(false);
+    useEffect(()=>{
+        if(props.flash?.message){
+            setShowToast(true);
+            const timer = setTimeout(()=>{
+                setShowToast(false);
+            }, 2000);
+            return ()=> clearTimeout(timer);
+        }
+    }, [props.flash?.message])
+
     return (
         <MainLayout>
             <Head title="Wishlist" />
+            <div className='flex w-full justify-center fixed z-50 top-[250px]'>
+                    {showToast && (
+                        <div className='h-[200px] w-[400px] flex justify-center items-center bg-green-600 shadow-lg shadow-green-400 text-white px-4 py-2 rounded-lg z-50'>
+                            {props.flash?.message}
+                        </div>
+                    )}
+            </div>
             <Breadcrumb
                 items={[
                     {
@@ -86,6 +111,7 @@ export default function Wishlist({wishlists}) {
                                             button={"add to cart"}
                                         />
                                         <motion.button
+                                            onClick={()=> removeFromWishlist(wishlist.id)}
                                             whileHover={{ scale: 1.2 }}
                                             transition={{ duration: 0.3 }}
                                             className="flex h-[30px] w-[30px] items-center justify-center rounded-3xl border-[1px] border-gray-300 font-light font-semibold text-[#666666]"
@@ -126,6 +152,7 @@ export default function Wishlist({wishlists}) {
                                 <div className="flex items-center justify-between py-2">
                                     <Button button={"add to cart"} />
                                     <motion.button
+                                        onClick={()=> console.log("button clicked!")}
                                         whileHover={{ scale: 1.2 }}
                                         transition={{ duration: 0.3 }}
                                         className="flex h-[30px] w-[30px] items-center justify-center rounded-3xl border-[1px] border-gray-300 font-light font-semibold text-[#666666]"
