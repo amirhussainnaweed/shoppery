@@ -244,7 +244,7 @@ export default function Cart(props) {
                     {/* Summary Card */}
                     <div className="p-6 border h-fit rounded-2xl">
                         <h1 className="mb-10 text-left text-xl font-medium leading-[150%] text-[#1A1A1A]">
-                            Cart Table
+                            Cart Total
                         </h1>
                         <div className="flex flex-col gap-4">
                             <div className="flex items-center justify-between p-4 border-b">
