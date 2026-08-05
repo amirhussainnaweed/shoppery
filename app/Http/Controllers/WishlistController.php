@@ -41,4 +41,12 @@ class WishlistController extends Controller
             'wishlists' => $wishlists
         ]);
     }
+
+    public function destroy($id)
+    {
+        $wishlist = Wishlist::findOrFail($id);
+        $wishlist->delete();
+
+        return redirect()->back()->with('message', 'Removed from wishlist!');
+    }
 }
