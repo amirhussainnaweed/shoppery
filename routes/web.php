@@ -55,6 +55,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/settings', [AccountController::class, 'index']);
     Route::put('/settings', [AccountController::class, 'update']);
+    Route::put('/settings/billing', [AccountController::class, 'updateBilling']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy']);
