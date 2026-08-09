@@ -10,7 +10,7 @@ import OrdersTable from '../Account/OrdersTable';
 import Profile from '../Account/Profile';
 import ProfileModal from '../Account/ProfileModel';
 
-export default function Dashboard() {
+export default function Dashboard({ theme }) {
     const [editProfile, setEditProfile] = useState(false);
 
     const [user, setUser] = useState({
@@ -58,6 +58,7 @@ export default function Dashboard() {
                             }}
                         />
                     )}
+                    <h2>Theme: {theme}</h2>
                     <Address
                         address={address}
                         onEdit={() => setIsModalOpen(true)}

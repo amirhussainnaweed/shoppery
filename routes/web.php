@@ -2,6 +2,7 @@
 
 use App\Controllers\CartController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductUpload;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -76,3 +77,8 @@ Route::get('/show-product/{product}', [SecondProduct::class, 'index'])->name('pr
 Route::get('/product/{product}/edit', [SecondProduct::class, 'edit'])->name('product.edit');
 
 Route::delete('/product/{product}', [SecondProduct::class, 'delete'])->name('product.delete');
+
+Route::post('/product/upload', [ProductUpload::class, 'upload'])->name('product.upload');
+Route::post('/product/upload/file', [ProductUpload::class, 'uploadFile'])->name('file.upload');
+
+Route::get('/upload', [ProductUpload::class, 'show']);
