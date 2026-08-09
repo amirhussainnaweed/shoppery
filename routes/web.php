@@ -47,14 +47,14 @@ Route::get('/orders', function () {
 Route::get('/order-details', function () {
     return Inertia::render('OrderHistory/OrderDetails');
 });
-Route::get('/settings', [AccountController::class, 'index']);
-
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard/Index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/settings', [AccountController::class, 'index']);
+    Route::put('/settings', [AccountController::class, 'update']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy']);
