@@ -8,6 +8,7 @@ import Button from './Button';
 import Input from './Input';
 import LabelForm from './LabelForm';
 import PasswordInput from './PasswordInput';
+import {router} from '@inertiajs/react';
 
 export default function Settings({user}) {
     console.log(user);
@@ -42,7 +43,15 @@ export default function Settings({user}) {
         email: 'dianne.russell@gmail.com',
         phone: '(603) 555-0123',
     };
-    const [accountData, setAccountData] = useState(INITIAL_ACCOUNT);
+    const [accountData, setAccountData] = useState({
+        ...INITIAL_ACCOUNT,
+        firstName: user.name,
+        lastName: user.lastname,
+        email: user.email,
+        phone: user.phonenumber,
+        image: user.profile_image,
+    });
+
     const [billingData, setBillingData] = useState(INITIAL_BILLING);
 
     const accountChanged = !isEqual(accountData, INITIAL_ACCOUNT);
@@ -174,13 +183,15 @@ export default function Settings({user}) {
 
         setAccountLoading(true);
 
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+       router.put('/settings', accountData, {
+            onSuccess: () => {
+                toast.success('Account updated successfully');
+            },
+            onFinish: () => {
+                setAccountLoading(false);
+            },
+        });
 
-            toast.success('Account updated successfully');
-        } finally {
-            setAccountLoading(false);
-        }
     };
 
     const handleAccountChange = (field, value) => {
