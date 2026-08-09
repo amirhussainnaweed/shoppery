@@ -10,8 +10,9 @@ import LabelForm from './LabelForm';
 import PasswordInput from './PasswordInput';
 import {router} from '@inertiajs/react';
 
-export default function Settings({user}) {
+export default function Settings({user, addresses}) {
     console.log(user);
+    console.log(addresses);
 
 
 
@@ -52,7 +53,17 @@ export default function Settings({user}) {
         image: user.profile_image,
     });
 
-    const [billingData, setBillingData] = useState(INITIAL_BILLING);
+    const [billingData, setBillingData] = useState({
+        ...INITIAL_BILLING,
+        firstName: user.name,
+        lastName: user.lastname,
+        street: addresses.address_text,
+        country: addresses.country,
+        state: addresses.city,
+        zipCode: addresses.postal_code,
+        email: user.email,
+        phone: user.phonenumber,
+    });
 
     const accountChanged = !isEqual(accountData, INITIAL_ACCOUNT);
     const billingChanged = !isEqual(billingData, INITIAL_BILLING);
@@ -212,13 +223,14 @@ export default function Settings({user}) {
             return toast.error('Invalid email');
         } else setBillingLoading(true);
 
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            toast.success('Billing address updated');
-        } finally {
-            setBillingLoading(false);
-        }
+        router.put('/settings/billing', billingData, {
+            onSuccess: () => {
+                toast.success('Billing address updated successfully');
+            },
+            onFinish: () => {
+                setBillingLoading(false);
+            },
+        });
     };
 
     const handleBillingChange = (field, value) => {
