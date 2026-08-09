@@ -4,6 +4,7 @@ use App\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -46,9 +47,7 @@ Route::get('/orders', function () {
 Route::get('/order-details', function () {
     return Inertia::render('OrderHistory/OrderDetails');
 });
-Route::get('/settings', function () {
-    return Inertia::render('Account/Settings');
-});
+Route::get('/settings', [AccountController::class, 'index']);
 
 
 Route::get('/dashboard', function () {
