@@ -5,38 +5,85 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\CartItem;
+use Inertia\Inertia;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function addToCart($productid){
 
-    if (!Auth::check()){
-        return redirect()->route('login');
-    }
-    
-    $cart = Cart::firstOrCreate([
-        'user_id' => Auth::id()
-    ]);
 
-    $product = Product::findOrFail($productid);
+    public function index(){
+    $cart = Cart::where('user_id', auth()->id())->first();
 
-    $item = CartItem::where('cart_id', $cart->id)->first();
-
-    if ($item){
-        $item->quantity += 1;
-        $item->save();
-    } else {
-        CartItem::create([
-            'cart_id' => $cart->id,
-            'product_id' => $product->id,
-            'quantity' => 1
+    if (!$cart) {
+        return Inertia::render('Cart/Index', [
+            'cartItems' => []
         ]);
     }
 
-    return back()->with('success', 'product added to cart');
+    $cartItems = CartItem::where('cart_id', $cart->id)
+        ->with('product')
+        ->get();
 
+    return Inertia::render('Cart/Index', [
+        'cartItems' => $cartItems
+    ]);
     }
+
+
+    public function addToCart(Request $request){
+    $request->validate([
+        'product_id' => 'required|exists:products,id',
+    ]);
+
+    $cart = Cart::firstOrCreate([
+        'user_id' => auth()->id(),
+    ]);
+
+    
+    $cartItems = CartItem::where('cart_id', $cart->id)
+        ->where('product_id', $request->product_id)
+        ->first();
+
+    if ($cartItems) {
+        $cartItems->increment('quantity');
+    } else {
+        CartItem::create([
+            'cart_id'    => $cart->id,
+            'product_id' => $request->product_id,
+            'quantity'   => 1,
+        ]);
+    }
+
+    return redirect()->route('cart.index');
+    }
+
+
+
+    public function updateQuantity(Request $request, $id)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $cartItems = CartItem::findOrFail($id);
+        
+        $cartItems->update([
+            'quantity' => $request->quantity
+        ]);
+
+        return back(); 
+    }
+
+
+    public function destroy($id)
+    {
+        $cartItems = CartItem::findOrFail($id);
+        $cartItems->delete();
+
+        return back();
+    }
+
 
 }
