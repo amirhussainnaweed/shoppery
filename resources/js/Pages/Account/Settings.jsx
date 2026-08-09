@@ -9,7 +9,13 @@ import Input from './Input';
 import LabelForm from './LabelForm';
 import PasswordInput from './PasswordInput';
 
-export default function Settings() {
+export default function Settings({user}) {
+    console.log(user);
+
+
+
+
+
     const [accountLoading, setAccountLoading] = useState(false);
     const [billingLoading, setBillingLoading] = useState(false);
     const [passwordLoading, setPasswordLoading] = useState(false);
