@@ -4,7 +4,6 @@ import MainLayout from '@/Components/Layout/MainLayout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
-import orders from '../Account/Orders';
 import OrdersTable from '../Account/OrdersTable';
 
 export default function OrderHistory({orderso}) {
