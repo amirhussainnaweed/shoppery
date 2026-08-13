@@ -48,14 +48,15 @@ Route::get('/order-details', function () {
     return Inertia::render('OrderHistory/OrderDetails');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard/Index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [AccountController::class, 'indexDash'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/settings', [AccountController::class, 'index']);
     Route::put('/settings', [AccountController::class, 'update']);
+    Route::put('/dashboardUpdate', [AccountController::class, 'updateDash']);
+    Route::put('/dashboardUpdateAddress', [AccountController::class, 'updateDashAdd']);
     Route::put('/settings/billing', [AccountController::class, 'updateBilling']);
+    Route::put('/settings/password', [AccountController::class, 'updatePassword'])->name('settings.password');
     Route::post('/wishlist', [WishlistController::class, 'store']);
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy']);
