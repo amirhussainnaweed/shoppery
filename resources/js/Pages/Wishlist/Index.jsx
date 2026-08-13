@@ -1,5 +1,6 @@
 import Breadcrumb from '@/Components/Breadcrumb';
 import MainLayout from '@/Components/Layout/MainLayout';
+import AccountLayout from '@/Components/Layout/AccountLayout';
 import { Head, router, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -72,46 +73,88 @@ export default function Wishlist({wishlists}) {
                 ]}
                 backgroundImage="/images/breadcrumbs.png"
             ></Breadcrumb>
-            <div className="container mx-auto px-4 py-10">
-                <h1 className="text-center text-4xl font-semibold">
-                    My Wishlist
-                </h1>
-                <div className="my-6 hidden rounded-[8px] border md:block">
-                    <div className="">
-                        <div className="grid h-[40px] grid-cols-4 items-center gap-10 border-b px-6 text-[#808080]">
-                            <p>PRODUCT</p>
-                            <p>PRICE</p>
-                            <p>STOCK STATUS</p>
-                            <p></p>
-                        </div>
-                        <div className="px-6 py-4">
-                            {wishlists.map((wishlist, index) => (
-                                <div
-                                    className="grid grid-cols-4 items-center justify-between gap-10"
-                                    key={index}
-                                >
-                                    <div className="flex flex-col items-center justify-center xl:flex-row xl:justify-around">
-                                        <img
-                                            className="h-[100px] w-[100px]"
-                                            src={wishlist.product.image}
-                                            alt="Products"
-                                        />
-                                        <div>
-                                            <p className="font-medium">
-                                                {wishlist.product.name}
-                                            </p>
+            <AccountLayout>
+                    <div className="container mx-auto px-4 py-10">
+                    <h1 className="text-center text-4xl font-semibold">
+                        My Wishlist
+                    </h1>
+                    <div className="my-6 hidden rounded-[8px] border md:block">
+                        <div className="">
+                            <div className="grid h-[40px] grid-cols-4 items-center gap-10 border-b px-6 text-[#808080]">
+                                <p>PRODUCT</p>
+                                <p>PRICE</p>
+                                <p>STOCK STATUS</p>
+                                <p></p>
+                            </div>
+                            <div className="px-6 py-4">
+                                {wishlists.map((wishlist, index) => (
+                                    <div
+                                        className="grid grid-cols-4 items-center justify-between gap-10"
+                                        key={index}
+                                    >
+                                        <div className="flex flex-col items-center justify-center xl:flex-row xl:justify-around">
+                                            <img
+                                                className="h-[100px] w-[100px]"
+                                                src={wishlist.product.image}
+                                                alt="Products"
+                                            />
+                                            <div>
+                                                <p className="font-medium">
+                                                    {wishlist.product.name}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <p>{wishlist.product.price}</p>
+                                        <StatusBadge status={wishlist.product.is_featured} />
+                                        <div className="flex items-center justify-center gap-4">
+                                            <Button
+                                                whileHover={{ scale: 1.05 }}
+                                                transition={{ duration: 0.3 }}
+                                                button={"add to cart"}
+                                            />
+                                            <motion.button
+                                                onClick={()=> removeFromWishlist(wishlist.id)}
+                                                whileHover={{ scale: 1.2 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="flex h-[30px] w-[30px] items-center justify-center rounded-3xl border-[1px] border-gray-300 font-light font-semibold text-[#666666]"
+                                            >
+                                                X
+                                            </motion.button>
                                         </div>
                                     </div>
-                                    <p>{wishlist.product.price}</p>
-                                    <StatusBadge status={wishlist.product.is_featured} />
-                                    <div className="flex items-center justify-center gap-4">
-                                        <Button
-                                            whileHover={{ scale: 1.05 }}
-                                            transition={{ duration: 0.3 }}
-                                            button={"add to cart"}
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mx-8 my-6 flex flex-col justify-center gap-6 md:hidden">
+                        {wishlists.map((wishlist, index) => (
+                            <div key={index} className="rounded-md border p-4">
+                                <div>
+                                    <div className="grid grid-cols-2">
+                                        <img
+                                            className=""
+                                            src={wishlist.product.image}
+                                            alt="Product"
                                         />
+                                        <div className="flex flex-col items-start justify-center gap-2">
+                                            <h1 className="text-center font-medium">
+                                                {wishlist.product.name}
+                                            </h1>
+                                            <p className="text-center font-medium">
+                                                Price: {wishlist.product.price}
+                                            </p>
+                                            <div className="flex items-center gap-2">
+                                                <p className="font-medium">
+                                                    Status:
+                                                </p>
+                                                <StatusBadge status={wishlist.product.is_featured} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between py-2">
+                                        <Button button={"add to cart"} />
                                         <motion.button
-                                            onClick={()=> removeFromWishlist(wishlist.id)}
+                                            onClick={()=> console.log("button clicked!")}
                                             whileHover={{ scale: 1.2 }}
                                             transition={{ duration: 0.3 }}
                                             className="flex h-[30px] w-[30px] items-center justify-center rounded-3xl border-[1px] border-gray-300 font-light font-semibold text-[#666666]"
@@ -120,51 +163,11 @@ export default function Wishlist({wishlists}) {
                                         </motion.button>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <div className="mx-8 my-6 flex flex-col justify-center gap-6 md:hidden">
-                    {wishlists.map((wishlist, index) => (
-                        <div key={index} className="rounded-md border p-4">
-                            <div>
-                                <div className="grid grid-cols-2">
-                                    <img
-                                        className=""
-                                        src={wishlist.product.image}
-                                        alt="Product"
-                                    />
-                                    <div className="flex flex-col items-start justify-center gap-2">
-                                        <h1 className="text-center font-medium">
-                                            {wishlist.product.name}
-                                        </h1>
-                                        <p className="text-center font-medium">
-                                            Price: {wishlist.product.price}
-                                        </p>
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-medium">
-                                                Status:
-                                            </p>
-                                            <StatusBadge status={wishlist.product.is_featured} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between py-2">
-                                    <Button button={"add to cart"} />
-                                    <motion.button
-                                        onClick={()=> console.log("button clicked!")}
-                                        whileHover={{ scale: 1.2 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="flex h-[30px] w-[30px] items-center justify-center rounded-3xl border-[1px] border-gray-300 font-light font-semibold text-[#666666]"
-                                    >
-                                        X
-                                    </motion.button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            </AccountLayout>
         </MainLayout>
     );
 }
