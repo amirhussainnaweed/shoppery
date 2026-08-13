@@ -97,26 +97,27 @@ export default function Settings({user, addresses}) {
         }));
     };
 
-    const handlePasswordSubmit = async (e) => {
+    const handlePasswordSubmit = (e) => {
         e.preventDefault();
+
         if (!validatePassword()) {
             return;
         }
+
         setPasswordLoading(true);
 
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            toast.success('Password updated successfully');
-
-            setPasswordData({
-                currentPassword: '',
-                newPassword: '',
-                confirmPassword: '',
-            });
-        } finally {
-            setPasswordLoading(false);
-        }
+        router.put('/settings/password', {
+            currentPassword: passwordData.currentPassword,
+            newPassword: passwordData.newPassword,
+            confirmPassword: passwordData.confirmPassword,
+        }, {
+            onSuccess: () => {
+                toast.success('Account updated successfully');
+            },
+            onFinish: () => {
+                setPasswordLoading(false);
+            },
+        });
     };
 
     const validatePassword = () => {
