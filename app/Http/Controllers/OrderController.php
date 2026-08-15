@@ -20,7 +20,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::with([
-            'orderItem.Product',
+            'orderItem.Product.images',
             'billing',
             'shippingAddress',
         ])->findOrFail($id);
