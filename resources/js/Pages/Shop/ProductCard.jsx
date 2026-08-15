@@ -1,34 +1,17 @@
 import { Eye, Heart } from 'lucide-react';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
-
 
 
 
 
 const ProductCard = ({ product }) => {
 
-const addToCart = async () => {
-    try {
-        const response = await axios.post(
-            `/cart/add/${product.id}`,
-            {},
-            {
-                withCredentials: true,
-            }
-        );
-
-        alert(response.data.message);
-
-    } catch (error) {
-
-        if (error.response?.status === 401) {
-            window.location.href = "/login";
-            return;
-        }
-
-    }
-};
+const addToCart = () => {
+        // ارسال درخواست POST به لاراول جهت افزودن به دیتابیس و هدایت به /cart
+        router.post('/cart/add', {
+            product_id: product.id
+        });
+    };
 
 
     const addToWishList = (productID) => {
@@ -38,27 +21,27 @@ const addToCart = async () => {
     }
 
     return (
-        <div className="group relative overflow-hidden rounded-md border bg-white p-4 transition-all duration-300 hover:scale-105 hover:border-green-500 hover:shadow-lg">
+        <div className="relative p-4 overflow-hidden transition-all duration-300 bg-white border rounded-md group hover:scale-105 hover:border-green-500 hover:shadow-lg">
             {/* OUT OF STOCK */}
 
             {!product.stock && (
-                <span className="absolute left-3 top-3 z-20 rounded bg-black px-2 py-1 text-xs text-white">
+                <span className="absolute z-20 px-2 py-1 text-xs text-white bg-black rounded left-3 top-3">
                     Out of stock
                 </span>
             )}
 
             {/* RIGHT ICONS */}
 
-            <div className="absolute right-3 top-3 z-20 flex flex-col gap-2">
+            <div className="absolute z-20 flex flex-col gap-2 right-3 top-3">
                 {/* HEART */}
 
-                <button onClick={() => addToWishList(product.id)} className="hidden h-9 w-9 items-center justify-center rounded-full border bg-white shadow-sm group-hover:flex">
+                <button onClick={() => addToWishList(product.id)} className="items-center justify-center hidden bg-white border rounded-full shadow-sm h-9 w-9 group-hover:flex">
                     <Heart size={18} />
                 </button>
 
                 {/* EYE */}
 
-                <button className="hidden h-9 w-9 items-center justify-center rounded-full border bg-white shadow-sm group-hover:flex">
+                <button className="items-center justify-center hidden bg-white border rounded-full shadow-sm h-9 w-9 group-hover:flex">
                     <Eye size={18} />
                 </button>
             </div>
@@ -69,7 +52,7 @@ const addToCart = async () => {
                 <img
                     src={product.image}
                     alt={product.title}
-                    className="h-52 object-contain"
+                    className="object-contain h-52"
                 />
             </div>
 
@@ -82,7 +65,7 @@ const addToCart = async () => {
 
                 {/* PRICE */}
 
-                <div className="mt-1 flex items-center gap-2">
+                <div className="flex items-center gap-2 mt-1">
                     <p className="text-lg font-bold">${product.price}</p>
 
                     {product.oldPrice && (

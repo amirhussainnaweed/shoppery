@@ -1,7 +1,9 @@
 <?php
 
-use App\Controllers\CartController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductUpload;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AccountController;
@@ -14,11 +16,6 @@ Route::get('/', function () {
 });
 Route::get('/product-details/{id}', [ProductController::class, 'show'])->name('product.details');
 
-Route::get('/shop', [ProductController::class, 'index'])->name('shop.products');
-
-Route::get('/cart', function () {
-    return Inertia::render('Cart/Index');
-});
 
 Route::get('/blogs', function () {
     return Inertia::render('Blog/Index');
@@ -28,12 +25,18 @@ Route::get('/blogs/singleBlog', function () {
     return Inertia::render('Blogs/SingleBlock');
 });
 
+Route::get('/shop', [ProductController::class, 'index'])->name('shop.products');
 
-Route::post('/cart/add/{productid}', [CartController::class, 'addToCart'])->middleware('auth');
-
-Route::get('/checkout', function () {
-    return Inertia::render('Checkout/Index');
+Route::middleware('auth')->group(function () {
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::patch('/cart/item/{id}', [CartController::class, 'updateQuantity'])->name('cart.update');
+    Route::delete('/cart/item/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::Post('/checkout/add/product/{id}', [CheckoutController::class, 'addToCheckout'])->name('add.checkout');
 });
+
+
 
 Route::get('/about', function () {
     return Inertia::render('About/Index');
@@ -76,3 +79,8 @@ Route::get('/show-product/{product}', [SecondProduct::class, 'index'])->name('pr
 Route::get('/product/{product}/edit', [SecondProduct::class, 'edit'])->name('product.edit');
 
 Route::delete('/product/{product}', [SecondProduct::class, 'delete'])->name('product.delete');
+
+Route::post('/product/upload', [ProductUpload::class, 'upload'])->name('product.upload');
+Route::post('/product/upload/file', [ProductUpload::class, 'uploadFile'])->name('file.upload');
+
+Route::get('/upload', [ProductUpload::class, 'show']);
