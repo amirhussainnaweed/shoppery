@@ -33,6 +33,14 @@ export default function Orderdetails({order, user, address}) {
             subtotal: '$28.00',
         },
     ];
+
+    const calculateDiscount = () => {
+        return order.order_item[0].product.discount * 100;
+    }
+
+    const handleTotal = () => {
+        return +((1 - order.order_item[0].product.discount) * order.total_price).toFixed(2);
+    }
     return (
         <>
             <MainLayout>
@@ -171,7 +179,7 @@ export default function Orderdetails({order, user, address}) {
                                                 Discount:
                                             </span>
                                             <span className="text-[14px] font-medium leading-[150%] text-[#1A1A1A]">
-                                                20%
+                                                % {calculateDiscount()}
                                             </span>
                                         </div>
 
@@ -189,7 +197,7 @@ export default function Orderdetails({order, user, address}) {
                                                 Total
                                             </span>
                                             <span className="text-lg font-semibold leading-[150%] text-[#2C742F]">
-                                                ${order.total_price}
+                                                $ {handleTotal()}
                                             </span>
                                         </div>
                                     </div>
@@ -282,29 +290,29 @@ export default function Orderdetails({order, user, address}) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {products.map((product) => (
+                                    {order.order_item.map((item) => (
                                         <tr
-                                            key={product.name}
+                                            key={item.id}
                                             className="border-b"
                                         >
                                             <td className="p-4">
                                                 <div className="flex items-center gap-4 text-sm font-medium leading-[150%] text-[#1A1A1A]">
                                                     <img
-                                                        src={product.image}
-                                                        alt={product.name}
+                                                        src={item.product.images[0].image_url}
+                                                        alt={item.product.name}
                                                         className="h-16 w-16"
                                                     />
-                                                    {product.name}
+                                                    {item.product.name}
                                                 </div>
                                             </td>
                                             <td className="px-4 py-5 text-sm font-normal leading-[150%] text-[#1A1A1A]">
-                                                {product.price}
+                                                {item.product.price}
                                             </td>
                                             <td className="px-4 py-5 text-sm font-normal leading-[150%] text-[#1A1A1A]">
-                                                {product.quantity}
+                                                {item.product.quantity}
                                             </td>
                                             <td className="px-4 py-5 text-sm font-medium leading-[150%] text-[#1A1A1A]">
-                                                {product.subtotal}
+                                                {item.product.price}
                                             </td>
                                         </tr>
                                     ))}
